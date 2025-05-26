@@ -19,4 +19,8 @@ sqlc:
 test:
 	go test -v -cover ./...
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test
+coverage:
+	go test -v -cover -coverprofile=coverage.out ./...
+	gcov2lcov -infile=coverage.out -outfile=lcov.info
+
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test coverage
