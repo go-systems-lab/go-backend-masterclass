@@ -125,6 +125,39 @@ Validate your commit messages before committing:
 ./scripts/validate-commit.sh "feat: add user authentication"
 ```
 
+## 🧪 Testing & Coverage
+
+### Running Tests
+
+```bash
+# Run all tests
+make test
+
+# Run tests with coverage
+make coverage
+```
+
+### Code Coverage Visualization
+
+This project is configured to work with the **Coverage Gutters** VS Code extension for visual coverage highlighting.
+
+#### Setup:
+1. Install the extension: `Coverage Gutters` by ryanluker
+2. Generate coverage: `make coverage`
+3. In VS Code Command Palette (`Cmd+Shift+P`):
+   - Run: `Coverage Gutters: Display Coverage`
+
+#### What you'll see:
+- 🟢 **Green highlights**: Code covered by tests
+- 🔴 **Red highlights**: Code NOT covered by tests (write tests for these!)
+- 🟡 **Yellow highlights**: Partially covered code
+- 📊 **Coverage percentage** in status bar
+
+#### Coverage Reports:
+- `coverage.out` - Go coverage format
+- `lcov.info` - LCOV format for VS Code extension
+- Run `go tool cover -html=coverage.out` for HTML coverage report
+
 ## 📚 Documentation
 
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Detailed contribution guidelines
