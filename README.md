@@ -20,6 +20,16 @@ Configure git to use our commit message template:
 git config commit.template .gitmessage
 ```
 
+### Required Tools Installation
+
+Install SQLC for SQL code generation:
+
+```bash
+go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+```
+
+> **Note:** SQLC is a tool that generates type-safe Go code from SQL queries. It's essential for this project's database layer implementation.
+
 ## 📝 Available Git Aliases
 
 ### Conventional Commit Shortcuts
