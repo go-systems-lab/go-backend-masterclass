@@ -1,0 +1,107 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Commit Message Guidelines
+
+This project uses @Conventional Commits to automatically generate changelogs and determine version bumps when the release workflow is triggered.
+
+### Commit Frequency Philosophy
+
+- **Make small, frequent commits** rather than large, infrequent ones
+- Each commit should represent a single logical change
+- Commit early and often to maintain a clear development history
+- Break down large features into smaller, manageable commits
+
+### Conventional Commit Format
+
+Each commit message should follow this structure:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Commit Types
+
+| Type | Description | Version Bump | Changelog Section |
+|------|-------------|--------------|-------------------|
+| `feat` | A new feature | Minor | Features |
+| `fix` | A bug fix | Patch | Bug Fixes |
+| `docs` | Documentation only changes | Patch | Documentation |
+| `refactor` | Code change that neither fixes a bug nor adds a feature | Patch | Code Refactoring |
+| `perf` | Performance improvements | Patch | Performance Improvements |
+| `test` | Adding missing tests or correcting existing tests | Patch | Tests |
+| `build` | Changes that affect the build system or external dependencies | Patch | Build System |
+| `ci` | Changes to CI configuration files and scripts | Patch | Continuous Integration |
+| `chore` | Other changes that don't modify src or test files | Patch | Miscellaneous |
+| `style` | Changes that do not affect the meaning of the code | Patch | Styles |
+
+### Breaking Changes
+
+To indicate a breaking change, add `!` after the type or add `BREAKING CHANGE:` in the footer:
+
+```bash
+feat!: remove deprecated API endpoint
+
+BREAKING CHANGE: The /v1/old-endpoint has been removed. Use /v1/new-endpoint instead.
+```
+
+This will trigger a **major** version bump.
+
+### Project Tools Available
+
+This project includes helpful tools for maintaining commit standards:
+
+- **Git commit template**: Configured via `.gitmessage`
+- **Git aliases**: Quick shortcuts like `git feat "description"`
+- **Commit validation**: Use `./scripts/validate-commit.sh "message"` to validate format
+- **Quick reference**: See `COMMIT_REFERENCE.md` for daily use guide
+
+### Examples
+
+#### Good commit messages (small, focused):
+```bash
+feat: add user authentication middleware
+fix: resolve database connection timeout issue
+docs: update API documentation for user endpoints
+refactor: improve error handling in user service
+perf: optimize database queries for user feed
+test: add unit tests for JWT token validation
+build: update Go version to 1.21
+ci: add automated security scanning
+chore: update dependencies to latest versions
+feat(auth): implement JWT token refresh mechanism
+fix(api): handle edge case in pagination logic
+```
+
+#### Good commit sequence (breaking down features):
+```bash
+feat: add user model struct
+feat: implement user repository interface
+feat: add user service layer
+test: add unit tests for user service
+docs: update API documentation for user endpoints
+```
+
+#### Poor commit messages (avoid these):
+```bash
+- update secret name
+- comment tests for now
+- fix stuff
+- working on features
+- WIP
+- minor changes
+- feat: implement complete user management system with tests and docs
+```
+
+### Workflow Tips
+
+1. **Stage incrementally**: Use `git add -p` to stage specific changes
+2. **Review before committing**: Use `git staged` to review staged changes
+3. **Use meaningful scopes**: Add scope for specific modules (e.g., `feat(auth):`, `fix(db):`)
+4. **Commit working code**: Don't commit broken code, even in progress
