@@ -28,7 +28,16 @@ Install SQLC for SQL code generation:
 go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 ```
 
-> **Note:** SQLC is a tool that generates type-safe Go code from SQL queries. It's essential for this project's database layer implementation.
+Install golang-migrate for database migrations:
+
+```bash
+brew install golang-migrate
+```
+
+> **Note:** 
+> - **SQLC** generates type-safe Go code from SQL queries
+> - **golang-migrate** handles database schema migrations and versioning
+> - Both tools are essential for this project's database layer implementation
 
 ## 📝 Available Git Aliases
 
