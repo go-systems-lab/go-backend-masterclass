@@ -23,4 +23,7 @@ coverage:
 	go test -v -cover -coverprofile=coverage.out ./...
 	gcov2lcov -infile=coverage.out -outfile=lcov.info
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test coverage
+server:
+	go run main.go
+
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test coverage server
