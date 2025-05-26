@@ -34,10 +34,17 @@ Install golang-migrate for database migrations:
 brew install golang-migrate
 ```
 
+Initialize SQLC configuration:
+
+```bash
+sqlc init
+```
+
 > **Note:** 
 > - **SQLC** generates type-safe Go code from SQL queries
 > - **golang-migrate** handles database schema migrations and versioning
-> - Both tools are essential for this project's database layer implementation
+> - **sqlc init** creates a `sqlc.yaml` configuration file for code generation
+> - All tools are essential for this project's database layer implementation
 
 ## 📝 Available Git Aliases
 
