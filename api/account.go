@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	db "github.com/go-systems-lab/go-backend-masterclass/db/sqlc"
@@ -28,6 +29,12 @@ func (server *Server) createAccount(ctx *gin.Context) {
 
 	account, err := server.store.CreateAccount(ctx, arg)
 	if err != nil {
+		errStr := err.Error()
+		if strings.Contains(errStr, "23503") || strings.Contains(errStr, "23505") ||
+			strings.Contains(errStr, "foreign_key_violation") || strings.Contains(errStr, "unique_violation") {
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+			return
+		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
