@@ -53,6 +53,36 @@ sqlc init
 > - **sqlc init** creates a `sqlc.yaml` configuration file for code generation
 > - All tools are essential for this project's database layer implementation
 
+### Docker Compose & Service Startup
+
+#### Ensuring Database Readiness with `wait-for.sh`
+
+When running the API and PostgreSQL services together using Docker Compose, it's important to make sure the database is fully ready before the API service starts. If the API tries to connect before PostgreSQL is accepting connections, it will fail.
+
+To solve this, we use a script called **wait-for.sh** (from [eficode/wait-for v2.2.4](https://github.com/eficode/wait-for/releases/tag/v2.2.4)). This script waits for a TCP host/port to become available before running the next command.
+
+**How it works in this project:**
+- The API service's entrypoint is set to:
+  ```yaml
+  entrypoint: ["/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh"]
+  ```
+- This means:
+  1. Wait for the `postgres` service to be ready on port 5432
+  2. Then run `/app/start.sh` (which runs migrations and starts the app)
+
+**Why is this needed?**
+- Docker Compose's `depends_on` only waits for the container to start, not for the database to be ready.
+- `wait-for.sh` ensures the API only starts after PostgreSQL is accepting connections, preventing race conditions and startup errors.
+
+**Where does `wait-for.sh` come from?**
+- Sourced from: [eficode/wait-for v2.2.4](https://github.com/eficode/wait-for/releases/tag/v2.2.4)
+- It's a widely used, open-source utility for orchestrating service startup order in Docker environments.
+
+**Related files updated:**
+- `Dockerfile` now copies `wait-for.sh` and makes it executable.
+- `docker-compose.yaml` uses `wait-for.sh` as the entrypoint for the API service.
+- `start.sh` is used to run migrations and start the Go app after the database is ready.
+
 ## 📝 Available Git Aliases
 
 ### Conventional Commit Shortcuts
