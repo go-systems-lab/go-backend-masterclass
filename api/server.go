@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 	db "github.com/go-systems-lab/go-backend-masterclass/db/sqlc"
+	"github.com/go-systems-lab/go-backend-masterclass/token"
 	"github.com/go-systems-lab/go-backend-masterclass/util"
 )
 
@@ -15,12 +16,12 @@ type Server struct {
 	store      db.Store
 	router     *gin.Engine
 	config     util.Config
-	tokenMaker *util.TokenMaker
+	tokenMaker token.Maker
 }
 
 // NewServer creates a new HTTP server and sets up routing.
 func NewServer(config util.Config, store db.Store) (*Server, error) {
-	tokenMaker, err := util.NewTokenMaker(config.TokenSymmetricKey)
+	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create token maker: %w", err)
 	}
