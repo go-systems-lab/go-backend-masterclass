@@ -3,10 +3,10 @@ package api
 import (
 	"database/sql"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	db "github.com/go-systems-lab/go-backend-masterclass/db/sqlc"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 type CreateAccountRequest struct {
@@ -29,11 +29,13 @@ func (server *Server) createAccount(ctx *gin.Context) {
 
 	account, err := server.store.CreateAccount(ctx, arg)
 	if err != nil {
-		errStr := err.Error()
-		if strings.Contains(errStr, "23503") || strings.Contains(errStr, "23505") ||
-			strings.Contains(errStr, "foreign_key_violation") || strings.Contains(errStr, "unique_violation") {
-			ctx.JSON(http.StatusForbidden, errorResponse(err))
-			return
+		if pgErr, ok := err.(*pgconn.PgError); ok {
+			switch pgErr.Code {
+			case "23505", "23503": // unique_violation, foreign_key_violation
+				ctx.JSON(http.StatusForbidden, errorResponse(err))
+				return
+			}
+
 		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
