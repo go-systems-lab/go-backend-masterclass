@@ -2,12 +2,12 @@ package api
 
 import (
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	db "github.com/go-systems-lab/go-backend-masterclass/db/sqlc"
 	"github.com/go-systems-lab/go-backend-masterclass/util"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 type CreateUserRequest struct {
@@ -47,12 +47,15 @@ func (server *Server) createUser(ctx *gin.Context) {
 
 	user, err := server.store.CreateUser(ctx, arg)
 	if err != nil {
-		errStr := err.Error()
-		if strings.Contains(errStr, "23503") || strings.Contains(errStr, "23505") ||
-			strings.Contains(errStr, "foreign_key_violation") || strings.Contains(errStr, "unique_violation") {
-			ctx.JSON(http.StatusForbidden, errorResponse(err))
-			return
+		// Check for pgx/pgconn errors first
+		if pgErr, ok := err.(*pgconn.PgError); ok {
+			switch pgErr.Code {
+			case "23505": // unique_violation
+				ctx.JSON(http.StatusForbidden, errorResponse(err))
+				return
+			}
 		}
+
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
