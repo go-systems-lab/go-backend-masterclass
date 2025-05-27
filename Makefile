@@ -29,4 +29,21 @@ server:
 mock:
 	mockgen -source=db/sqlc/store.go -destination=db/mock/store.go -package=mockdb -aux_files=github.com/go-systems-lab/go-backend-masterclass/db/sqlc=db/sqlc/querier.go
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test coverage server mock
+new_migration:
+	migrate create -ext sql -dir db/migration -seq $(name)
+
+migrateup1:
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose up 1
+
+migratedown1:
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose down 1
+
+migrateforce:
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" force $(version)
+
+migratedownall:
+	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" down -all
+
+db_reset: migratedownall migrateup
+
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test coverage server mock new_migration migrateup1 migratedown1 migrateforce migratedownall db_reset
