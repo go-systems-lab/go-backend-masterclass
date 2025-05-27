@@ -12,10 +12,10 @@ type TransferRequest struct {
 	FromAccountID int64  `json:"from_account_id" binding:"required,min=1"`
 	ToAccountID   int64  `json:"to_account_id" binding:"required,min=1"`
 	Amount        int64  `json:"amount" binding:"required,min=1"`
-	Currency      string `json:"currency" binding:"required,oneof=USD EUR CAD INR"`
+	Currency      string `json:"currency" binding:"required,currency"`
 }
 
-func (server *Server) goodAccountCurrency(ctx *gin.Context, accountID int64, currency string) bool {
+func (server *Server) sameAccountCurrency(ctx *gin.Context, accountID int64, currency string) bool {
 	account, err := server.store.GetAccount(ctx, accountID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -38,11 +38,11 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 		return
 	}
 
-	if !server.goodAccountCurrency(ctx, req.FromAccountID, req.Currency) {
+	if !server.sameAccountCurrency(ctx, req.FromAccountID, req.Currency) {
 		return
 	}
 
-	if !server.goodAccountCurrency(ctx, req.ToAccountID, req.Currency) {
+	if !server.sameAccountCurrency(ctx, req.ToAccountID, req.Currency) {
 		return
 	}
 
