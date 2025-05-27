@@ -34,6 +34,12 @@ Install golang-migrate for database migrations:
 brew install golang-migrate
 ```
 
+Install mockgen for generating test mocks:
+
+```bash
+go install github.com/golang/mock/mockgen@v1.6.0
+```
+
 Initialize SQLC configuration:
 
 ```bash
@@ -43,6 +49,7 @@ sqlc init
 > **Note:** 
 > - **SQLC** generates type-safe Go code from SQL queries
 > - **golang-migrate** handles database schema migrations and versioning
+> - **mockgen** generates mock implementations for testing
 > - **sqlc init** creates a `sqlc.yaml` configuration file for code generation
 > - All tools are essential for this project's database layer implementation
 
@@ -157,6 +164,38 @@ This project is configured to work with the **Coverage Gutters** VS Code extensi
 - `coverage.out` - Go coverage format
 - `lcov.info` - LCOV format for VS Code extension
 - Run `go tool cover -html=coverage.out` for HTML coverage report
+
+## 🎭 Mock Generation
+
+### Generating Mocks for Testing
+
+This project uses **mockgen** to generate mock implementations for testing. Mocks allow you to test components in isolation by replacing dependencies with controllable test doubles.
+
+#### Generate Store Interface Mock
+
+```bash
+mockgen -source=db/sqlc/store.go -destination=db/mock/store.go -package=mockdb -aux_files=github.com/go-systems-lab/go-backend-masterclass/db/sqlc=db/sqlc/querier.go
+```
+
+#### Command Breakdown:
+- **`-source=db/sqlc/store.go`** - Source file containing the interface to mock
+- **`-destination=db/mock/store.go`** - Where to save the generated mock
+- **`-package=mockdb`** - Package name for the generated mock
+- **`-aux_files=...`** - Include auxiliary files for embedded interfaces
+
+#### Why We Need `-aux_files`:
+The `Store` interface embeds the `Querier` interface:
+```go
+type Store interface {
+    Querier  // Embedded interface
+    TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
+}
+```
+
+Without `-aux_files`, mockgen can't resolve the embedded `Querier` interface and fails with:
+```
+unknown embedded interface Querier
+```
 
 ## 📚 Documentation
 
