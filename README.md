@@ -307,9 +307,3 @@ git feat! "remove deprecated API endpoint"
 3. **GitHub Secrets**:
    - `AWS_ACCESS_KEY_ID`
    - `AWS_SECRET_ACCESS_KEY`
-
-
-
----
-
-**Happy coding! 🚀** Remember to commit early and often with meaningful messages.
