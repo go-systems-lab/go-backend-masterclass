@@ -339,3 +339,23 @@ git feat! "remove deprecated API endpoint"
 
 2. **IAM Permissions**:
    - Attach `SecretsManagerReadWrite` policy to `deployment` group
+
+### Local Docker Testing
+
+1. **AWS CLI Setup**:
+   ```bash
+   # Install AWS CLI
+   aws configure
+   # Enter: Access Key ID, Secret Key, us-east-1, json
+   ```
+
+2. **ECR Authentication & Run**:
+   ```bash
+   # Login to ECR
+   aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <ecr-registry-uri>
+   
+   # Pull and run image
+   docker pull <repository-uri>
+   docker run -p 8080:8080 <image:tag>
+   docker ps
+   ```
