@@ -294,6 +294,22 @@ Add `!` after type for breaking changes:
 git feat! "remove deprecated API endpoint"
 ```
 
+
+## 🚀 AWS ECR Deployment
+
+### GitHub Actions Setup
+
+1. **Create ECR Repository**: `simplebank` in AWS ECR
+2. **Setup IAM**:
+   - User: `github-ci`
+   - Group: `deployment` 
+   - Policy: `AmazonElasticContainerRegistryPublicFullAccess`
+3. **GitHub Secrets**:
+   - `AWS_ACCESS_KEY_ID`
+   - `AWS_SECRET_ACCESS_KEY`
+
+
+
 ---
 
 **Happy coding! 🚀** Remember to commit early and often with meaningful messages.
