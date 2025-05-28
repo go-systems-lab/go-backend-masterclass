@@ -307,3 +307,35 @@ git feat! "remove deprecated API endpoint"
 3. **GitHub Secrets**:
    - `AWS_ACCESS_KEY_ID`
    - `AWS_SECRET_ACCESS_KEY`
+
+
+### AWS RDS PostgreSQL Setup
+
+1. **Create RDS Instance**:
+   - Engine: PostgreSQL 15 (Free Tier)
+   - DB Instance ID: `simple-bank`
+   - Master Username: `root`
+   - Password: Auto-generate
+
+2. **Network Configuration**:
+   - Public Access: Yes (for development)
+   - Security Group: `access-postgres-anywhere`
+   - Initial Database: `simple_bank`
+
+3. **Security Group Rules**:
+   - Edit inbound rules to allow access from anywhere (0.0.0.0/0)
+
+### AWS Secrets Manager Setup
+
+1. **Create Secret**:
+   - Type: Other type of secret
+   - Secret Name: `simple_bank`
+   - Key-Value Pairs:
+     - `DB_DRIVER`
+     - `DB_SOURCE`
+     - `SERVER_ADDRESS`
+     - `TOKEN_SYMMETRIC_KEY`
+     - `ACCESS_TOKEN_DURATION`
+
+2. **IAM Permissions**:
+   - Attach `SecretsManagerReadWrite` policy to `deployment` group
