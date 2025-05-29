@@ -361,3 +361,84 @@ git feat! "remove deprecated API endpoint"
    ```
 
 ### Deployment to AWS EKS (Will add later)
+
+## 🔌 gRPC Setup & Development
+
+### What is gRPC?
+
+**gRPC** (gRPC Remote Procedure Calls) is a modern, high-performance RPC framework that uses HTTP/2 for transport and Protocol Buffers (protobuf) for serialization. It provides:
+
+- **Type-safe APIs** with auto-generated client/server code
+- **High performance** with HTTP/2 multiplexing and binary serialization
+- **Cross-platform** support for multiple programming languages
+- **Streaming support** for real-time data exchange
+
+### Prerequisites Installation
+
+#### 1. Install Protocol Buffers Compiler
+
+```bash
+# macOS (using Homebrew)
+brew install protobuf
+
+# Verify installation
+protoc --version
+```
+
+#### 2. Install Go Plugins for protobuf
+
+```bash
+# Install protobuf Go plugin
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+
+# Install gRPC Go plugin
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+# Verify installations
+protoc-gen-go --version
+protoc-gen-go-grpc --version
+```
+
+### Project Structure
+
+```
+proto/
+├── service_simple_bank.proto    # Service definitions
+└── rpc_*.proto                 # Individual RPC definitions
+
+pb/
+├── service_simple_bank.pb.go    # Generated protobuf code
+└── service_simple_bank_grpc.pb.go # Generated gRPC server/client code
+```
+
+### Code Generation
+
+Generate Go code from proto files:
+
+```bash
+# Generate protobuf and gRPC code
+protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
+       --go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+       proto/*.proto
+```
+
+### Development Workflow
+
+1. **Define Services**: Write `.proto` files defining your gRPC services
+2. **Generate Code**: Run protoc to generate Go server/client code
+3. **Implement Server**: Implement the generated service interfaces
+4. **Create Client**: Use generated client code to call services
+5. **Test**: Use tools like `grpcurl` or `grpcui` for testing
+
+### Useful Tools
+
+```bash
+# Install grpcurl for command-line testing
+go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
+
+# Install grpcui for web-based testing
+go install github.com/fullstorydev/grpcui/cmd/grpcui@latest
+```
+
+> **Note:** gRPC enables building scalable, type-safe APIs with excellent performance characteristics, making it ideal for microservices and high-throughput applications.
+
