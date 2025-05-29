@@ -1,3 +1,5 @@
+DB_URL=postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable
+
 postgres:
 	docker run --name postgres15 --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:15-alpine
 
@@ -8,13 +10,13 @@ dropdb:
 	docker exec -it postgres15 dropdb simple_bank
 
 migrateup:
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose up
+	migrate -path db/migration -database "$(DB_URL)" -verbose up
 
 migrateuprds:
-	migrate -path db/migration -database "postgresql://root:4PsyXIrrnAxx8ChaGeSD@simple-bank.c61i4iquyz0y.us-east-1.rds.amazonaws.com:5432/simple_bank" -verbose up
+	migrate -path db/migration -database "$(DB_URL)" -verbose up
 
 migratedown:
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose down
+	migrate -path db/migration -database "$(DB_URL)" -verbose down
 
 sqlc:
 	sqlc generate
@@ -36,20 +38,26 @@ new_migration:
 	migrate create -ext sql -dir db/migration -seq $(name)
 
 migrateup1:
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose up 1
+	migrate -path db/migration -database "$(DB_URL)" -verbose up 1
 
 migratedown1:
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose down 1
+	migrate -path db/migration -database "$(DB_URL)" -verbose down 1
 
 migrateforce:
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" force $(version)
+	migrate -path db/migration -database "$(DB_URL)" force $(version)
 
 migratedownall:
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" down -all
+	migrate -path db/migration -database "$(DB_URL)" down -all
 
 db_reset: migratedownall migrateup
 
 network:
 	docker network create bank-network
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test coverage server mock new_migration migrateup1 migratedown1 migrateforce migratedownall db_reset network
+proto:
+	rm -rf pb/*
+	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
+	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+	proto/*.proto
+
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test coverage server mock new_migration migrateup1 migratedown1 migrateforce migratedownall db_reset network proto
