@@ -7,13 +7,6 @@ alwaysApply: false
 
 This project uses @Conventional Commits to automatically generate changelogs and determine version bumps when the release workflow is triggered.
 
-### Commit Frequency Philosophy
-
-- **Make small, frequent commits** rather than large, infrequent ones
-- Each commit should represent a single logical change
-- Commit early and often to maintain a clear development history
-- Break down large features into smaller, manageable commits
-
 ### Conventional Commit Format
 
 Each commit message should follow this structure:
@@ -25,6 +18,26 @@ Each commit message should follow this structure:
 
 [optional footer(s)]
 ```
+
+### **Commit Message Length Guidelines** 📏
+
+**DEFAULT: Use single-line commit messages**
+- **Most commits should be single-line** with a clear, concise description
+- **Subject line**: 50 characters or less
+- **Only use multi-line** for very complex changes that require detailed explanation
+
+**When to use single-line (PREFERRED):**
+- Adding a new feature
+- Fixing a bug
+- Updating documentation
+- Refactoring code
+- Most day-to-day development work
+
+**When to use multi-line (RARE):**
+- Major architectural changes
+- Complex bug fixes affecting multiple components
+- Breaking changes requiring detailed explanation
+- Large feature implementations with multiple sub-components
 
 ### Commit Types
 
@@ -53,18 +66,9 @@ BREAKING CHANGE: The /v1/old-endpoint has been removed. Use /v1/new-endpoint ins
 
 This will trigger a **major** version bump.
 
-### Project Tools Available
-
-This project includes helpful tools for maintaining commit standards:
-
-- **Git commit template**: Configured via `.gitmessage`
-- **Git aliases**: Quick shortcuts like `git feat "description"`
-- **Commit validation**: Use `./scripts/validate-commit.sh "message"` to validate format
-- **Quick reference**: See `COMMIT_REFERENCE.md` for daily use guide
-
 ### Examples
 
-#### Good commit messages (small, focused):
+#### Good commit messages (single-line - PREFERRED):
 ```bash
 feat: add user authentication middleware
 fix: resolve database connection timeout issue
@@ -79,13 +83,16 @@ feat(auth): implement JWT token refresh mechanism
 fix(api): handle edge case in pagination logic
 ```
 
-#### Good commit sequence (breaking down features):
+#### Multi-line commit messages (ONLY for very complex changes):
 ```bash
-feat: add user model struct
-feat: implement user repository interface
-feat: add user service layer
-test: add unit tests for user service
-docs: update API documentation for user endpoints
+git commit -m "feat!: redesign authentication system" \
+           -m "- Replace JWT with OAuth 2.0 implementation" \
+           -m "- Add support for multiple identity providers" \
+           -m "- Implement refresh token rotation" \
+           -m "- Update all API endpoints for new auth flow" \
+           -m "" \
+           -m "BREAKING CHANGE: All existing authentication tokens are invalidated." \
+           -m "Clients must implement OAuth 2.0 flow to authenticate."
 ```
 
 #### Poor commit messages (avoid these):
@@ -96,12 +103,4 @@ docs: update API documentation for user endpoints
 - working on features
 - WIP
 - minor changes
-- feat: implement complete user management system with tests and docs
 ```
-
-### Workflow Tips
-
-1. **Stage incrementally**: Use `git add -p` to stage specific changes
-2. **Review before committing**: Use `git staged` to review staged changes
-3. **Use meaningful scopes**: Add scope for specific modules (e.g., `feat(auth):`, `fix(db):`)
-4. **Commit working code**: Don't commit broken code, even in progress

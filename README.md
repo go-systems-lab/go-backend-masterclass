@@ -359,3 +359,5 @@ git feat! "remove deprecated API endpoint"
    docker run -p 8080:8080 <image:tag>
    docker ps
    ```
+
+### Deployment to AWS EKS (Will add later)

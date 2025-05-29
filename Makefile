@@ -10,6 +10,9 @@ dropdb:
 migrateup:
 	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose up
 
+migrateuprds:
+	migrate -path db/migration -database "postgresql://root:4PsyXIrrnAxx8ChaGeSD@simple-bank.c61i4iquyz0y.us-east-1.rds.amazonaws.com:5432/simple_bank" -verbose up
+
 migratedown:
 	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose down
 
@@ -46,4 +49,7 @@ migratedownall:
 
 db_reset: migratedownall migrateup
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test coverage server mock new_migration migrateup1 migratedown1 migrateforce migratedownall db_reset
+network:
+	docker network create bank-network
+
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test coverage server mock new_migration migrateup1 migratedown1 migrateforce migratedownall db_reset network
