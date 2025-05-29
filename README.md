@@ -488,4 +488,49 @@ call CreateUser                 # Call method interactively
 
 > **Note:** If Evans shows no services, ensure your terminal window is large enough and server reflection is enabled (which it is by default in this project).
 
+### gRPC Gateway Setup
+
+#### Install Required Dependencies
+
+Install the necessary gRPC Gateway tools and plugins:
+
+```bash
+go install \
+    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
+    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
+    google.golang.org/protobuf/cmd/protoc-gen-go \
+    google.golang.org/grpc/cmd/protoc-gen-go-grpc
+```
+
+#### Google APIs Proto Dependencies
+
+When using `protoc` to generate stubs, ensure the required Google API dependencies are available to the compiler at compile time. These files can be obtained by manually cloning the [googleapis repository](https://github.com/googleapis/googleapis) and providing them to `protoc` during code generation.
+
+**Required proto files:**
+```
+google/api/annotations.proto
+google/api/field_behavior.proto
+google/api/http.proto
+google/api/httpbody.proto
+```
+
+#### Setup Steps
+
+1. **Clone Google APIs repository:**
+   ```bash
+   git clone https://github.com/googleapis/googleapis.git
+   ```
+
+2. **Generate code with proper includes:**
+   ```bash
+   protoc --proto_path=proto \
+          --proto_path=googleapis \
+          --go_out=pb --go_opt=paths=source_relative \
+          --go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+          --grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
+          proto/*.proto
+   ```
+
+> **Note:** gRPC Gateway allows you to serve both gRPC and REST API from a single codebase by generating a reverse-proxy server that translates RESTful HTTP API into gRPC calls.
+
 
