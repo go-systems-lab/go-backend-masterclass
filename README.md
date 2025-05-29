@@ -442,3 +442,50 @@ go install github.com/fullstorydev/grpcui/cmd/grpcui@latest
 
 > **Note:** gRPC enables building scalable, type-safe APIs with excellent performance characteristics, making it ideal for microservices and high-throughput applications.
 
+### Testing gRPC Services
+
+#### Install Evans (Interactive gRPC Client)
+
+```bash
+# Install Evans using Homebrew
+brew tap ktr0731/evans
+brew install evans
+```
+
+#### Testing with grpcurl (Command Line)
+
+```bash
+# List all available services
+grpcurl -plaintext localhost:9090 list
+
+# List methods for a specific service
+grpcurl -plaintext localhost:9090 list pb.SimpleBankService
+
+# Describe a specific method
+grpcurl -plaintext localhost:9090 describe pb.SimpleBankService.CreateUser
+
+# Call a method with data
+grpcurl -plaintext -d '{
+  "username": "alice",
+  "password": "secret",
+  "full_name": "Alice Cooper",
+  "email": "alice@example.com"
+}' localhost:9090 pb.SimpleBankService/CreateUser
+```
+
+#### Testing with Evans (Interactive)
+
+```bash
+# Start Evans with reflection
+evans --host localhost --port 9090 --reflection repl
+
+# Inside Evans:
+show service                    # List services
+package pb                      # Select package
+service SimpleBankService       # Select service
+call CreateUser                 # Call method interactively
+```
+
+> **Note:** If Evans shows no services, ensure your terminal window is large enough and server reflection is enabled (which it is by default in this project).
+
+
