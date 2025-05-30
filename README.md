@@ -537,4 +537,17 @@ google/api/httpbody.proto
 
 The Swagger UI assets were obtained from the `dist` folder of the official [swagger-ui repository](https://github.com/swagger-api/swagger-ui.git).
 
+## Static File Embedding with Statik
+
+For embedding static files (like Swagger UI assets) into the Go server binary, we use the `statik` package:
+
+### Installation
+
+```bash
+# Install the statik command-line tool
+go install github.com/rakyll/statik@latest
+```
+
+> **Note:** Statik allows you to embed static files directly into your Go binary, eliminating the need to distribute separate static file directories with your application.
+
 
