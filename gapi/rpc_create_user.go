@@ -2,11 +2,14 @@ package gapi
 
 import (
 	"context"
+	"time"
 
 	db "github.com/go-systems-lab/go-backend-masterclass/db/sqlc"
 	"github.com/go-systems-lab/go-backend-masterclass/pb"
 	"github.com/go-systems-lab/go-backend-masterclass/util"
 	"github.com/go-systems-lab/go-backend-masterclass/val"
+	"github.com/go-systems-lab/go-backend-masterclass/worker"
+	"github.com/hibiken/asynq"
 	"github.com/jackc/pgx/v5/pgconn"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
@@ -41,6 +44,20 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 			}
 		}
 		return nil, status.Errorf(codes.Internal, "failed to create user: %s", err)
+	}
+
+	//TODO: use db transaction to ensure that the user is created and the task is distributed
+	taskPayload := &worker.PayloadSendVerifyEmail{
+		Username: user.Username,
+	}
+	opts := []asynq.Option{
+		asynq.MaxRetry(10),
+		asynq.ProcessIn(10 * time.Second),
+		asynq.Queue("critical"),
+	}
+	err = server.taskDistributor.DistributeTaskSendVerifyEmail(ctx, taskPayload, opts...)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to distribute task: %s", err)
 	}
 
 	rsp := &pb.CreateUserResponse{
