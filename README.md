@@ -533,4 +533,8 @@ google/api/httpbody.proto
 
 > **Note:** gRPC Gateway allows you to serve both gRPC and REST API from a single codebase by generating a reverse-proxy server that translates RESTful HTTP API into gRPC calls.
 
+# Swagger Documentation Source
+
+The Swagger UI assets were obtained from the `dist` folder of the official [swagger-ui repository](https://github.com/swagger-api/swagger-ui.git).
+
 
